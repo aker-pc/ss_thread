@@ -4,25 +4,12 @@
 #include <concepts>
 #include <type_traits>
 
-namespace ss::wrapper{
+namespace ss::detail{
   // define abstract interface
   struct ss_join {};
   struct ss_detach {};
 
   // define thread wrapper
-  // template <typename T>
-  // class ss_thread_wrapper {
-  // private:
-  //   using ss_flag = std::false_type;
-  //
-  // public:
-  //   ss_thread_wrapper() = delete;
-  //   ss_thread_wrapper(std::thread&& m_th) {
-  //     static_assert(ss_flag::value == false, "type is wrong");
-  //   }
-  // };
-
-  // define concepts
   template <typename T>
   concept ss_thread_type = std::is_same_v<ss_join, T> || std::is_same_v<ss_detach, T>;
 
@@ -30,7 +17,7 @@ namespace ss::wrapper{
   template <ss_thread_type _th>
   class ss_thread_wrapper {
   private:
-    using ss_flag = std::true_type;
+    using id = std::thread::id;
     std::thread m_th;
 
   public:
@@ -48,7 +35,10 @@ namespace ss::wrapper{
       } else {
         if (m_th.joinable()) 
           m_th.detach();
-        std::cout << "detach finish" << std::endlm_th::get_id
+        std::cout << "detach finish" << std::endl;
+      }
+    }; 
+
     std::thread::id get_id() { return m_th::get_id(); };
-  };    
-}
+  }
+};

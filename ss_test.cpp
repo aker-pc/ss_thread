@@ -10,8 +10,8 @@ int main() {
   // avoid to use following statement 
   // ss::wrapper::ss_thread_wrapper<int> data(std::thread(func)); 
   // ss::wrapper::ss_thread_wrapper<int> data((std::thread(func))); 
-  ss::wrapper::ss_thread_wrapper<ss::wrapper::ss_detach> data_detach((std::thread(func))); 
-  ss::wrapper::ss_thread_wrapper<ss::wrapper::ss_join>   data_join((std::thread(func))); 
+  ss::wrapper::ss_thread_wrapper<ss::detail::ss_detach> data_detach((std::thread(func))); 
+  ss::wrapper::ss_thread_wrapper<ss::detail::ss_join>   data_join((std::thread(func))); 
 
 
   return 0;
