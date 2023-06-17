@@ -1,25 +1,35 @@
 #include <map>
 #include <condition_variable>
+#include <ss_thread_wrapper.h>
+
 namespace ss::detail {
 
 class work_factory {
 public:
   using ss_worker = ss_thread_wrapper<ss_detach>; 
-  using ss_worker_map = std::map<ss_worker::id, worker>;
+  using ss_worker_map = std::map<ss_worker::id, ss_worker>;
 
 public:
   size_t ss_decline;
   size_t ss_task_done_workers;
   bool ss_waiting = {false};
   bool ss_descturting = {false};
-  std::string name = {"ss_default"};
+  std::string ss_name;
   
   ss_worker_map ss_workers = {};
-  ss_task_queue<std::function<void()>> ss_queue = {};
+  // 待处理
+  // ss_task_queue<std::function<void()>> ss_queue = {};
 
   std::mutex ss_mtx;
   std::condition_variable ss_thread_cv;
   std::condition_variable ss_task_done_cv;
+
+public:
+  explicit work_factory(const char* name = "ss_default", int wks = 1) :
+    ss_name(name) {
+      for (int i = 0; i < std::max(wks, 1), ++i)
+        add_ss_worker();
+    };
 
 public:
   // common methods
@@ -41,7 +51,9 @@ public:
 private:
   void ss_mission() {
     std::function<void()> task;
+    
     while (true) {
+
       if (ss_decline <= 0 && ss_queue.try_pop()) {
         task();
       } else if(ss_decline > 0) {
@@ -65,10 +77,10 @@ private:
           std::this_thread::yield();
         }
       }
+
     }
   }
 
-}
+};
 
-
-}
+};

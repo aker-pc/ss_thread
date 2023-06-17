@@ -17,10 +17,10 @@ namespace ss::detail{
   template <ss_thread_type _th>
   class ss_thread_wrapper {
   private:
-    using id = std::thread::id;
     std::thread m_th;
 
   public:
+    using id = std::thread::id;
     ss_thread_wrapper(std::thread&& th) : m_th(std::move(th)) {};
     ss_thread_wrapper(ss_thread_wrapper&&) = default;
 
@@ -40,5 +40,5 @@ namespace ss::detail{
     }; 
 
     std::thread::id get_id() { return m_th::get_id(); };
-  }
+  };
 };
